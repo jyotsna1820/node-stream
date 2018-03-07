@@ -36,30 +36,32 @@ const TransformStream = new Transform({
 
 var totalLines1 = 0;
 var bytes = 0;
-var time = null;
 
 const createReport = new Transform ({
     readableObjectMode:true,
     writableObjectMode: true,
+
     transform(chunk, encoding, next) {
     var dict = JSON.parse(chunk);
-    if(time === null)
-        time = dict.elapsed_time;
-    bytes += dict.totalbytes;
-    totalLines1 += dict.total_lines;
-
-    process.nextTick(() => next())
-    },
-    });
-
-createReport.on('finish',function() {
-    var diff = process.hrtime(time)
+    var diff = process.hrtime(dict.elapsed_time)
     diff = diff[0] * 1e9 + diff[1]
     time_in_sec = diff/1e9;
     throughput = bytes/time_in_sec
-    report = "this file contains " + totalLines1 + " lines, " + bytes + " bytes" + " and it takes " + time_in_sec +" seconds to process it.\n throughput:" + throughput + " bytes/sec";  
+    
+    report = "this file contains " + dict.total_lines + " lines, " + dict.totalbytes + " bytes" + " and it takes " + time_in_sec +" seconds to process it.\n throughput:" + throughput + " bytes/sec";  
     console.log(report)
-  })
+  }
+
+    });
+
+// createReport.on('finish',function() {
+//     var diff = process.hrtime(time)
+//     diff = diff[0] * 1e9 + diff[1]
+//     time_in_sec = diff/1e9;
+//     throughput = bytes/time_in_sec
+//     report = "this file contains " + totalLines1 + " lines, " + bytes + " bytes" + " and it takes " + time_in_sec +" seconds to process it.\n throughput:" + throughput + " bytes/sec";  
+//     console.log(report)
+//   })
 
 
 rs = fs.createReadStream('test.log');
