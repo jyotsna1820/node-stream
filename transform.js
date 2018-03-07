@@ -34,22 +34,20 @@ const TransformStream = new Transform({
 });
 
 
-var totalLines1 = 0;
-var bytes = 0;
-
 const createReport = new Transform ({
     readableObjectMode:true,
     writableObjectMode: true,
 
-    transform(chunk, encoding, next) {
+    transform(chunk, encoding, callback) {
     var dict = JSON.parse(chunk);
     var diff = process.hrtime(dict.elapsed_time)
     diff = diff[0] * 1e9 + diff[1]
     time_in_sec = diff/1e9;
     throughput = bytes/time_in_sec
-    
+
     report = "this file contains " + dict.total_lines + " lines, " + dict.totalbytes + " bytes" + " and it takes " + time_in_sec +" seconds to process it.\n throughput:" + throughput + " bytes/sec";  
     console.log(report)
+    callback()
   }
 
     });
