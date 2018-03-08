@@ -18,7 +18,7 @@ Additional options (argv) can be used for changing the unit of block size (and t
 
 `cat <mylogfile> | node generate_report.js mb`
 
-By defaults, it uses *bytes* for all calculations.
+By default, it uses *bytes* for all calculations.
 
 ## Running tests
 
